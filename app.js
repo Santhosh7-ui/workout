@@ -228,14 +228,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   ];
 
+  function getTodayString() {
+    return new Date().toISOString().split('T')[0];
+  }
+
   // --- 3. STORAGE & STATE ---
   const STORAGE_KEYS = {
     HABITS: 'aegis_habits_v2',
     STEPS: 'aegis_santhosh_steps_v2',
     SKIPPING: 'aegis_santhosh_skipping_v2',
     SETS: 'aegis_santhosh_sets_v2',
-    WATER_MET: 'aegis_santhosh_water_v2'
+    WATER_MET: 'aegis_santhosh_water_v2',
+    LAST_DATE: 'aegis_santhosh_last_date_v2',
+    DAILY_HISTORY: 'aegis_santhosh_daily_history_v2',
+    CLINICAL_LOGS: 'aegis_santhosh_clinical_v2'
   };
+
+  const todayStr = getTodayString();
+  const lastActiveDate = localStorage.getItem(STORAGE_KEYS.LAST_DATE) || todayStr;
+  let dailyHistory = JSON.parse(localStorage.getItem(STORAGE_KEYS.DAILY_HISTORY)) || {};
 
   let rawHabits = JSON.parse(localStorage.getItem(STORAGE_KEYS.HABITS)) || DEFAULT_HABITS;
   // Migrate legacy split habits to unified habit_workout_day
@@ -254,16 +265,43 @@ document.addEventListener('DOMContentLoaded', () => {
   let completedSets = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETS)) || {};
   let waterMet = JSON.parse(localStorage.getItem(STORAGE_KEYS.WATER_MET)) ?? false;
 
+  // Day transition check: archive prior day's data and start a fresh daily morning
+  if (lastActiveDate !== todayStr) {
+    dailyHistory[lastActiveDate] = {
+      steps: steps,
+      skippingRounds: skippingRounds,
+      completedSets: completedSets,
+      waterMet: waterMet,
+      archivedAt: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEYS.DAILY_HISTORY, JSON.stringify(dailyHistory));
+
+    steps = 0;
+    skippingRounds = [false, false, false, false];
+    completedSets = {};
+    waterMet = false;
+    localStorage.setItem(STORAGE_KEYS.LAST_DATE, todayStr);
+    saveAll();
+  }
+
   function saveAll() {
+    const today = getTodayString();
     localStorage.setItem(STORAGE_KEYS.HABITS, JSON.stringify(habits));
     localStorage.setItem(STORAGE_KEYS.STEPS, steps);
     localStorage.setItem(STORAGE_KEYS.SKIPPING, JSON.stringify(skippingRounds));
     localStorage.setItem(STORAGE_KEYS.SETS, JSON.stringify(completedSets));
     localStorage.setItem(STORAGE_KEYS.WATER_MET, JSON.stringify(waterMet));
-  }
+    localStorage.setItem(STORAGE_KEYS.LAST_DATE, today);
 
-  function getTodayString() {
-    return new Date().toISOString().split('T')[0];
+    // Keep daily snapshot permanently recorded
+    dailyHistory[today] = {
+      steps: steps,
+      skippingRounds: skippingRounds,
+      completedSets: completedSets,
+      waterMet: waterMet,
+      updatedAt: new Date().toISOString()
+    };
+    localStorage.setItem(STORAGE_KEYS.DAILY_HISTORY, JSON.stringify(dailyHistory));
   }
 
   // --- 4. BI-DIRECTIONAL SYNCHRONIZATION ENGINE ---
@@ -1762,19 +1800,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Nightly Loop Form
+  // Nightly Loop Form & Clinical Metrics Storage
   const logPain = document.getElementById('logPain');
   const logPainTxt = document.getElementById('logPainTxt');
+  const logGlucoseInput = document.getElementById('logGlucose');
+  
+  // Restore saved clinical inputs if previously logged
+  const savedClinical = JSON.parse(localStorage.getItem(STORAGE_KEYS.CLINICAL_LOGS));
+  if (savedClinical) {
+    if (logGlucoseInput && savedClinical.glucose !== undefined) {
+      logGlucoseInput.value = savedClinical.glucose;
+    }
+    if (logPain && savedClinical.pain !== undefined) {
+      logPain.value = savedClinical.pain;
+    }
+  }
+
   if (logPain && logPainTxt) {
-    logPain.addEventListener('input', (e) => {
-      const v = parseInt(e.target.value);
+    const updatePainDesc = (v) => {
       let desc = 'Joints Asymptomatic';
       if (v >= 1 && v <= 2) desc = 'Mild joint stiffness';
       else if (v >= 3 && v <= 5) desc = 'Moderate discomfort / Uric acid alert';
       else if (v >= 6) desc = 'Acute Pain Flare';
       logPainTxt.textContent = `${v} / 10 (${desc})`;
       logPainTxt.style.color = v > 2 ? '#ef4444' : '#38bdf8';
-    });
+    };
+    logPain.addEventListener('input', (e) => updatePainDesc(parseInt(e.target.value)));
+    updatePainDesc(parseInt(logPain.value) || 0);
   }
 
   const patientLogForm = document.getElementById('patientLogForm');
@@ -1788,6 +1840,14 @@ document.addEventListener('DOMContentLoaded', () => {
         steps = logStepsVal;
       }
       waterMet = document.getElementById('logWaterCheck').checked;
+
+      // Persist clinical audit log
+      localStorage.setItem(STORAGE_KEYS.CLINICAL_LOGS, JSON.stringify({
+        glucose: g,
+        pain: p,
+        date: getTodayString()
+      }));
+
       syncHabitsFromWorkouts();
 
       const energy = calculateDynamicEnergy(steps);
