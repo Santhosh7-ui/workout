@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Level Up | Ultimate Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="dark-theme">
+
+    <header class="app-header">
+        <div class="header-overlay">
+            <div class="header-content">
+                <h1>Level Up.</h1>
+                <p class="subtitle">Curate your life.</p>
+            </div>
+            <button id="theme-toggle" class="icon-btn theme-toggle" title="Toggle Theme">
+                <span class="material-icons-round">light_mode</span>
+            </button>
+        </div>
+    </header>
+
+    <div class="container main-grid">
+        <!-- 1. Daily Wisdom (Inspiration) -->
+        <section class="card inspiration-card" id="inspiration-section">
+            <div class="card-header">
+                <h2>Daily Wisdom</h2>
+            </div>
+            <div class="inspiration-content" id="inspiration-content"></div>
+        </section>
+
+        <!-- 2. Today's Focus (RESTORED) -->
+        <section class="card progress-card" id="daily-progress-section">
+            <div class="card-header">
+                <h2>Today's Focus</h2>
+            </div>
+            <div class="daily-progress-container">
+                <h3 id="daily-progress-text">0/0 Completed</h3>
+                <div class="progress-bar-bg">
+                    <div id="daily-progress-fill" class="progress-bar-fill" style="width: 0%"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. The Archive (Tracker) -->
+        <section class="card tracker-card" id="tracker-section">
+            <div class="card-header">
+                <h2>The Archive</h2>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <div class="input-group" style="margin-bottom:0; border-bottom:none;">
+                        <!-- Input moved down -->
+                    </div>
+                    <button onclick="exportData()" class="export-btn" title="Download CSV">Export Data</button>
+                </div>
+            </div>
+            <!-- Moved input group here for better layout -->
+            <div class="input-group">
+                <input type="text" id="habit-input" placeholder="New habit...">
+                <button class="add-btn material-btn" id="add-btn">
+                    <span class="material-icons-round">add</span>
+                </button>
+            </div>
+            <ul class="todo-list" id="todo-list"></ul>
+        </section>
+
+        <!-- 4. Consistency Matrix -->
+        <section class="card matrix-card" id="matrix-section">
+            <div class="card-header">
+                <h2>Consistency Matrix</h2>
+            </div>
+            <div id="matrix-container" class="matrix-container"></div>
+        </section>
+
+        <!-- 5. Performance Analytics (RESTORED - Stats & Bar) -->
+        <section class="card analytics-card full-span" id="performance-analytics">
+            <div class="card-header">
+                <h2>Performance Analytics</h2>
+            </div>
+            <div class="analytics-split">
+                <!-- Summary Table -->
+                <div class="stats-panel">
+                    <h3>Summary</h3>
+                    <div id="stats-table-container"></div>
+                </div>
+                <!-- Distribution Chart -->
+                <div class="chart-panel">
+                    <h3>Distribution</h3>
+                    <div id="bar-chart-container" class="chart-container"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. Advanced Insights (New 3 Charts) -->
+        <section class="card advanced-card full-span">
+            <div class="card-header">
+                <h2>Advanced Insights</h2>
+            </div>
+
+            <div class="charts-grid">
+                <!-- Daily Polar -->
+                <div class="chart-box">
+                    <h3>Daily Snapshot</h3>
+                    <div id="daily-polar-chart" class="chart-canvas-container"></div>
+                    <div id="polar-stats" class="chart-stats"></div>
+                </div>
+
+                <!-- Weekly Line -->
+                <div class="chart-box">
+                    <h3>Weekly Trend</h3>
+                    <div id="weekly-line-chart" class="chart-canvas-container"></div>
+                    <div id="weekly-stats" class="chart-stats"></div>
+                </div>
+
+                <!-- Monthly Spline -->
+                <div class="chart-box full-width-chart">
+                    <h3>Monthly Trend</h3>
+                    <div id="monthly-spline-chart" class="chart-canvas-container"></div>
+                    <div id="monthly-stats" class="chart-stats"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

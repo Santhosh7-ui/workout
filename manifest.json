@@ -1,0 +1,17 @@
+{
+  "name": "Aegis Health — Clinical AI",
+  "short_name": "AegisHealth",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#090d16",
+  "description": "Evidence-based, zero-hallucination clinical nutrition and movement planner",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

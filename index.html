@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Aegis Health & Habit Dashboard — Santhosh</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Aegis Health">
+  <meta name="theme-color" content="#090a0f">
+  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-minimal">
+
+  <!-- Desktop Minimal Header -->
+  <header class="app-nav">
+    <div class="nav-brand">
+      <div class="brand-dot"></div>
+      <span class="brand-title">Aegis Clinical</span>
+      <span class="patient-pill">Santhosh • 30M • 179cm • 92kg</span>
+    </div>
+    <div class="nav-actions">
+      <button id="installGuideBtn" class="pill-action">📲 Install on iPhone</button>
+      <div class="view-switcher">
+        <button id="toggleMobileView" class="switch-btn active">Mobile Frame</button>
+        <button id="toggleDesktopView" class="switch-btn">Expanded View</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-wrapper mobile-layout" id="appWrapper">
+    <!-- Clean Device Container (No Notch, No Fake Battery) -->
+    <div class="device-shell">
+      
+      <!-- Sleek Inner Header -->
+      <div class="inner-header">
+        <div>
+          <span class="eyebrow" id="headerDate">Today • Focus & Action</span>
+          <h1 class="main-heading">Level Up • Santhosh</h1>
+        </div>
+        <div class="header-right-badges">
+          <span class="badge-status" id="headerHabitSummary">0/7 Habits</span>
+          <span class="badge-accent" id="headerCalorieBadge">1,950 kcal</span>
+        </div>
+      </div>
+
+      <!-- Scrollable Tab Container -->
+      <div class="device-content custom-scroll" id="deviceContent">
+
+        <!-- TAB 1: INTEGRATED HABIT DASHBOARD (FIRST TAB) -->
+        <section class="tab-view active" id="viewHabits">
+          
+          <!-- Daily Focus & Polar Progress Card -->
+          <div class="glass-card habit-focus-card">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow text-amber">Daily Consistency Engine</span>
+                <h3 class="card-title">Today's Focus</h3>
+              </div>
+              <span class="pill-muted" id="habitPercentText">0% Done</span>
+            </div>
+
+            <div class="habit-focus-split">
+              <!-- Animated SVG Polar Chart -->
+              <div class="polar-chart-wrapper" id="dailyPolarChart">
+                <svg viewBox="0 0 160 160" class="polar-svg">
+                  <circle cx="80" cy="80" r="62" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="12" />
+                  <circle cx="80" cy="80" r="62" fill="none" stroke="#38bdf8" stroke-width="12" 
+                          id="polarCircleFill" stroke-dasharray="389.5" stroke-dashoffset="389.5" 
+                          transform="rotate(-90 80 80)" stroke-linecap="round" />
+                  <text x="80" y="76" text-anchor="middle" fill="#fff" font-size="22" font-weight="800" id="polarPercentNumber">0%</text>
+                  <text x="80" y="96" text-anchor="middle" fill="#94a3b8" font-size="10" font-weight="600">DAILY GOAL</text>
+                </svg>
+              </div>
+
+              <!-- Habit Progress Stats -->
+              <div class="polar-stats-column">
+                <div class="stat-pill-box">
+                  <span class="stat-num text-emerald" id="habitsCompletedCount">0</span>
+                  <span class="stat-lbl">Completed</span>
+                </div>
+                <div class="stat-pill-box">
+                  <span class="stat-num text-amber" id="habitsPendingCount">7</span>
+                  <span class="stat-lbl">Pending</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Linear Bar -->
+            <div class="progress-bar-bg mt-2">
+              <div id="dailyProgressBarFill" class="progress-bar-fill" style="width: 0%"></div>
+            </div>
+          </div>
+
+          <!-- Live Workout & Movement Sync Card (Clinical METs Integration) -->
+          <div class="glass-card habit-workout-sync-card">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow text-sky">Clinical METs Activity Feed</span>
+                <h3 class="card-title">Live Workout & Movement Sync</h3>
+              </div>
+              <span class="pill-active" id="habitWorkoutBurnBadge">+0 kcal Burn</span>
+            </div>
+            
+            <div class="habit-workout-metrics-grid">
+              <div class="h-metric-tile">
+                <span class="h-metric-label">Completed Sets</span>
+                <span class="h-metric-val text-emerald" id="habitSetsDoneVal">0</span>
+                <span class="h-metric-sub" id="habitSetsSub">All Routines</span>
+              </div>
+              <div class="h-metric-tile">
+                <span class="h-metric-label">Skipping HIIT</span>
+                <span class="h-metric-val text-amber" id="habitSkippingDoneVal">0 / 6</span>
+                <span class="h-metric-sub">Rounds Done</span>
+              </div>
+              <div class="h-metric-tile">
+                <span class="h-metric-label">Walking NEAT</span>
+                <span class="h-metric-val text-sky" id="habitStepsDoneVal">0</span>
+                <span class="h-metric-sub">/ 6,000 Steps</span>
+              </div>
+            </div>
+
+            <div class="habit-workout-cta-row">
+              <button type="button" class="pill-btn-small cta-studio" id="habitOpenStudioBtn">▶ Open Exercise Studio</button>
+              <button type="button" class="pill-btn-small text-btn-muted" id="habitGoWorkoutsBtn">View Workouts Tab ›</button>
+            </div>
+          </div>
+
+          <!-- The Archive (Habits List with Live Sync) -->
+          <div class="glass-card">
+            <div class="card-top">
+              <div>
+                <h3 class="card-title">The Archive</h3>
+                <span class="eyebrow">Syncs with Workouts & Nutrition</span>
+              </div>
+              <button id="exportCsvBtn" class="pill-btn-small">Export CSV</button>
+            </div>
+
+            <!-- Add Habit Bar -->
+            <div class="habit-input-row">
+              <input type="text" id="newHabitInput" placeholder="Add custom habit (e.g. 10m stretching)...">
+              <button id="addHabitBtn" class="add-habit-btn">+</button>
+            </div>
+
+            <!-- List of Habits -->
+            <ul class="habit-list-container" id="habitListContainer">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+
+          <!-- Consistency Matrix (Monthly Calendar Grid) -->
+          <div class="glass-card">
+            <div class="card-top">
+              <h3 class="card-title">Consistency Matrix</h3>
+              <span class="eyebrow" id="matrixMonthLabel">November 2026</span>
+            </div>
+            <div class="matrix-scroll-wrapper" id="matrixContainer">
+              <!-- Month Table -->
+            </div>
+          </div>
+
+          <!-- Advanced Insights: Weekly & Monthly Trends -->
+          <div class="glass-card">
+            <div class="card-top">
+              <h3 class="card-title">Performance Analytics</h3>
+              <span class="pill-muted">7-Day & 30-Day Trends</span>
+            </div>
+
+            <!-- Weekly Line Chart -->
+            <div class="analytics-sub-block">
+              <div class="flex-between mb-1">
+                <span class="text-xs font-semibold">Weekly Completion Curve</span>
+                <span class="text-xs text-sky" id="weeklyAvgStat">0% 7-Day Avg</span>
+              </div>
+              <div id="weeklyLineChart" class="chart-canvas-container">
+                <!-- SVG Line Chart -->
+              </div>
+            </div>
+
+            <!-- Monthly Spline Curve -->
+            <div class="analytics-sub-block mt-3">
+              <div class="flex-between mb-1">
+                <span class="text-xs font-semibold">30-Day Consistency Spline</span>
+                <span class="text-xs text-emerald" id="monthlyScoreStat">0% Score</span>
+              </div>
+              <div id="monthlySplineChart" class="chart-canvas-container">
+                <!-- SVG Spline Area Chart -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Daily Wisdom -->
+          <div class="glass-card wisdom-card" id="wisdomCard">
+            <div class="wisdom-tag">Daily Wisdom</div>
+            <blockquote id="wisdomQuote" class="wisdom-quote">
+              "You do not rise to the level of your goals. You fall to the level of your systems."
+            </blockquote>
+            <span class="wisdom-author" id="wisdomAuthor">— James Clear, Atomic Habits</span>
+          </div>
+
+        </section>
+
+        <!-- TAB 2: WORKOUTS & EXERCISE TRACKER -->
+        <section class="tab-view" id="viewWorkoutHub">
+          
+          <!-- Daily Steps Goal Tracker (Synced with Habits & Dynamic Calorie Adjustment) -->
+          <div class="glass-card step-counter-card">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow">End-of-Day Activity Calibrator</span>
+                <h3 class="card-title">Daily Steps & Calorie Sync</h3>
+              </div>
+              <span class="pill-muted" id="stepPercent">0%</span>
+            </div>
+            
+            <div class="step-progress-row">
+              <div class="step-input-wrap">
+                <input type="number" id="stepsDirectInput" min="0" max="40000" step="100" class="step-direct-num" value="0">
+                <span class="step-unit">steps entered</span>
+              </div>
+              <div class="step-adjusters">
+                <button class="step-btn" id="subStepsBtn">-500</button>
+                <button class="step-btn add" id="addStepsBtn">+500</button>
+                <button class="step-btn add" id="addThousandBtn">+1k</button>
+              </div>
+            </div>
+            <div class="step-bar">
+              <div class="step-fill" id="stepFill" style="width: 0%"></div>
+            </div>
+
+            <!-- Dynamic Calorie Impact Row -->
+            <div class="step-impact-banner mt-2">
+              <div class="impact-metric">
+                <span class="impact-tag">Step Burn</span>
+                <span class="impact-num text-emerald" id="stepKcalBurn">+0 kcal</span>
+              </div>
+              <div class="impact-metric">
+                <span class="impact-tag">Dynamic TDEE</span>
+                <span class="impact-num text-sky" id="stepDynamicTdee">2,273 kcal</span>
+              </div>
+              <div class="impact-metric highlight">
+                <span class="impact-tag">Adjusted Target</span>
+                <span class="impact-num text-amber" id="stepAdjustedTarget">1,623 kcal</span>
+              </div>
+            </div>
+
+            <p class="card-desc mt-1" id="stepExplanationText">
+              <strong>Dynamic Energy Calibration:</strong> At 92 kg, each step burns ~0.045 kcal. Typing your exact steps automatically recalculates your TDEE, calories, and carb allocation across the entire app.
+            </p>
+          </div>
+
+          <!-- Skipping Rope Fat-Burn Protocol (Synced with Habits) -->
+          <div class="glass-card highlight-glow">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow text-amber">Cardio Tool: 1 Skipping Rope</span>
+                <h3 class="card-title">Skipping Rope Fat-Burn HIIT</h3>
+              </div>
+              <span class="badge-accent">~210 kcal Burn</span>
+            </div>
+            
+            <p class="card-desc">
+              <strong>Fat-Loss Prescription for 92 kg:</strong> Low-impact boxer bounce (jump only 1-2 cm, land soft on balls of feet with knees slightly flexed to protect feet from 8.4 mg/dL uric acid).
+            </p>
+
+            <div class="skipping-stats-grid">
+              <div class="s-stat">
+                <span class="s-lbl">Daily Target</span>
+                <span class="s-val">Max 400 Skips</span>
+              </div>
+              <div class="s-stat">
+                <span class="s-lbl">Interval Style</span>
+                <span class="s-val">4 &times; 100 Skips</span>
+              </div>
+              <div class="s-stat">
+                <span class="s-lbl">Rest Interval</span>
+                <span class="s-val">45 Secs</span>
+              </div>
+              <div class="s-stat">
+                <span class="s-lbl">Joint Safety</span>
+                <span class="s-val">Low Boxer Bounce</span>
+              </div>
+            </div>
+
+            <!-- Skipping Rounds Tracker -->
+            <div class="rounds-box">
+              <span class="rounds-title">Tap rounds as you complete them (100 skips each):</span>
+              <div class="rounds-grid" id="skippingRoundsGrid">
+                <!-- 4 clickable round check-boxes: 100, 200, 300, 400 -->
+              </div>
+            </div>
+          </div>
+
+          <!-- 7-Day Periodized Workout Schedule (Target: 10kg Reduction in 3 Months) -->
+          <div class="glass-card weekly-schedule-card">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow text-emerald">3-Month 10kg Fat-Loss Periodization</span>
+                <h3 class="card-title">Weekly Routine Navigator</h3>
+              </div>
+              <span class="pill-active" id="currentDayBadge">Today</span>
+            </div>
+
+            <!-- Day Selector Pills (Mon, Tue, Wed, Thu, Fri, Sat, Sun) -->
+            <div class="weekly-day-nav" id="weeklyDayNav">
+              <button class="day-chip" data-day="1">Mon</button>
+              <button class="day-chip" data-day="2">Tue</button>
+              <button class="day-chip" data-day="3">Wed</button>
+              <button class="day-chip" data-day="4">Thu</button>
+              <button class="day-chip" data-day="5">Fri</button>
+              <button class="day-chip" data-day="6">Sat</button>
+              <button class="day-chip" data-day="0">Sun</button>
+            </div>
+
+            <!-- Active Day Prescription Banner -->
+            <div class="day-prescription-banner" id="dayPrescriptionBanner">
+              <div class="day-presc-header">
+                <h4 id="prescDayTitle">Monday: Upper Body Push & Core Blast</h4>
+                <span class="pill-muted" id="prescDayTag">Upper & Core</span>
+              </div>
+              <p class="day-presc-desc" id="prescDayFocus">Focus: Dumbbell volume to deplete glycogen and trigger 48-hr afterburn without joint strain.</p>
+              <div class="day-presc-meta">
+                <span class="presc-meta-item" id="prescDaySkips">⚡ Skips: 200 (2 × 100)</span>
+                <span class="presc-meta-item" id="prescDaySteps">👟 Steps: 6,000</span>
+                <span class="presc-meta-item" id="prescDayMovements">🎯 5 Targeted Movements</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Interactive Exercise Studio Launch Button -->
+          <div class="glass-card chart-preview-toggle">
+            <button id="openStudioBtn" class="studio-launch-btn" type="button">
+              <span class="studio-launch-icon">▶</span>
+              <span class="studio-launch-text">
+                <span class="studio-launch-title">Interactive Exercise Studio</span>
+                <span class="studio-launch-sub">100% Offline Kinematic Demos · Step-by-Step Timer</span>
+              </span>
+              <span class="studio-launch-progress" id="studioLaunchProgress">0/4</span>
+            </button>
+          </div>
+
+          <!-- Section Heading for the Day's Prescribed Routine -->
+          <div class="flex-between mb-1 mt-2">
+            <span class="text-xs font-semibold" id="dayRoutineHeader">Today's Prescribed Routine</span>
+            <span class="text-xs text-secondary" id="dayRoutineCount">4 movements</span>
+          </div>
+
+          <!-- Exercises List (Filtered strictly to the selected day's routine) -->
+          <div class="exercise-feed" id="exerciseFeed">
+            <!-- Dynamically populated strictly with today's exercises -->
+          </div>
+
+          <!-- Reset Daily Workout Progress -->
+          <div class="text-center pt-2">
+            <button id="resetWorkoutsBtn" class="text-btn-muted">↺ Reset Completed Workouts for Tomorrow</button>
+          </div>
+
+        </section>
+
+        <!-- TAB 3: AUDIT & ANIMATED GRAPHS -->
+        <section class="tab-view" id="viewAudit">
+          
+          <!-- Key Metrics Grid -->
+          <div class="summary-cards">
+            <div class="mini-card highlight-warn">
+              <span class="mini-label">HbA1c & Glucose</span>
+              <div class="mini-value">6.0% <span class="unit">/ 104 mg/dL</span></div>
+              <span class="mini-sub text-amber">Prediabetes (IGT)</span>
+            </div>
+            <div class="mini-card highlight-danger">
+              <span class="mini-label">LDL & Total Chol</span>
+              <div class="mini-value">182 <span class="unit">/ 253 mg/dL</span></div>
+              <span class="mini-sub text-red">High Atherogenic Risk</span>
+            </div>
+            <div class="mini-card highlight-warn">
+              <span class="mini-label">Liver ALT (SGPT)</span>
+              <div class="mini-value">74 <span class="unit">U/L (Ref &le; 45)</span></div>
+              <span class="mini-sub text-amber">Hepatic Transaminitis</span>
+            </div>
+            <div class="mini-card highlight-warn">
+              <span class="mini-label">Serum Uric Acid</span>
+              <div class="mini-value">8.4 <span class="unit">mg/dL (Ref &le; 7.7)</span></div>
+              <span class="mini-sub text-amber">Hyperuricemia</span>
+            </div>
+          </div>
+
+          <!-- Animated Biomarker Bar Graph -->
+          <div class="glass-card">
+            <div class="card-top">
+              <h3 class="card-title">Santhosh's Biomarker Deviations</h3>
+              <span class="pill-muted">Animated Chart</span>
+            </div>
+            <div class="graph-container">
+              <svg viewBox="0 0 340 190" class="animated-chart">
+                <line x1="60" y1="30" x2="330" y2="30" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+                <line x1="60" y1="70" x2="330" y2="70" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+                <line x1="60" y1="110" x2="330" y2="110" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+                <line x1="60" y1="150" x2="330" y2="150" stroke="rgba(255,255,255,0.06)" stroke-dasharray="3,3"/>
+                
+                <line x1="190" y1="15" x2="190" y2="175" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,4"/>
+                <text x="195" y="24" fill="#10b981" font-size="9" font-weight="600">Ref Limit</text>
+
+                <!-- Bar 1: LDL -->
+                <text x="10" y="42" fill="#94a3b8" font-size="10" font-weight="500">LDL-C</text>
+                <rect x="60" y="32" width="0" height="14" rx="4" fill="url(#redGrad)" class="chart-bar">
+                  <animate attributeName="width" from="0" to="210" dur="1.1s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+                </rect>
+                <text x="278" y="43" fill="#fca5a5" font-size="10" font-weight="700">182 mg/dL</text>
+
+                <!-- Bar 2: Triglycerides -->
+                <text x="10" y="82" fill="#94a3b8" font-size="10" font-weight="500">Triglycerides</text>
+                <rect x="60" y="72" width="0" height="14" rx="4" fill="url(#amberGrad)" class="chart-bar">
+                  <animate attributeName="width" from="0" to="170" dur="1.2s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+                </rect>
+                <text x="238" y="83" fill="#fde68a" font-size="10" font-weight="700">206 mg/dL</text>
+
+                <!-- Bar 3: ALT -->
+                <text x="10" y="122" fill="#94a3b8" font-size="10" font-weight="500">ALT (Liver)</text>
+                <rect x="60" y="112" width="0" height="14" rx="4" fill="url(#amberGrad)" class="chart-bar">
+                  <animate attributeName="width" from="0" to="190" dur="1.3s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+                </rect>
+                <text x="258" y="123" fill="#fde68a" font-size="10" font-weight="700">74 U/L</text>
+
+                <!-- Bar 4: Uric Acid -->
+                <text x="10" y="162" fill="#94a3b8" font-size="10" font-weight="500">Uric Acid</text>
+                <rect x="60" y="152" width="0" height="14" rx="4" fill="url(#cyanGrad)" class="chart-bar">
+                  <animate attributeName="width" from="0" to="150" dur="1.4s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+                </rect>
+                <text x="218" y="163" fill="#bae6fd" font-size="10" font-weight="700">8.4 mg/dL</text>
+
+                <defs>
+                  <linearGradient id="redGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#ef4444" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#f87171"/>
+                  </linearGradient>
+                  <linearGradient id="amberGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#d97706" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#fbbf24"/>
+                  </linearGradient>
+                  <linearGradient id="cyanGrad" x1="0" y1="0" x2="1" y2="0">
+                    <stop offset="0%" stop-color="#0284c7" stop-opacity="0.8"/>
+                    <stop offset="100%" stop-color="#38bdf8"/>
+                  </linearGradient>
+                </defs>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Baselines Card -->
+          <div class="glass-card">
+            <span class="eyebrow">Calculated Clinical Baselines (Mifflin-St Jeor)</span>
+            <div class="baselines-grid">
+              <div class="b-card">
+                <span class="b-lbl">BMR</span>
+                <span class="b-val">1,894</span>
+                <span class="b-sub">kcal / day</span>
+              </div>
+              <div class="b-card">
+                <span class="b-lbl">TDEE (6k Steps + Home Ex)</span>
+                <span class="b-val">2,650</span>
+                <span class="b-sub">kcal maintenance</span>
+              </div>
+              <div class="b-card highlight">
+                <span class="b-lbl">Fat-Burn Calorie Target</span>
+                <span class="b-val">1,950</span>
+                <span class="b-sub">-700 kcal deficit</span>
+              </div>
+              <div class="b-card">
+                <span class="b-lbl">Current BMI</span>
+                <span class="b-val">28.7</span>
+                <span class="b-sub">Weight 92kg / 179cm</span>
+              </div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- TAB 4: NUTRITION & LIVER-HEART PROTOCOL -->
+        <section class="tab-view" id="viewNutrition">
+          
+          <div class="glass-card">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow" id="dietStepContext">Step-Calibrated Targets for 92 kg</span>
+                <h3 class="card-title" id="dietCalorieHeading">1,950 kcal / day (Safe Fat Loss)</h3>
+              </div>
+              <div class="badge-accent" id="nutritionWaterBadge">💧 3.5 Litres Water</div>
+            </div>
+
+            <div class="macro-row">
+              <div class="macro-cell">
+                <span class="m-label">Protein (Locked)</span>
+                <span class="m-val text-sky" id="dietProtVal">145g</span>
+                <div class="m-bar"><div class="m-fill bg-sky" id="dietProtBar" style="width: 30%"></div></div>
+              </div>
+              <div class="macro-cell">
+                <span class="m-label">Carbs (Adaptive)</span>
+                <span class="m-val text-emerald" id="dietCarbVal">190g</span>
+                <div class="m-bar"><div class="m-fill bg-emerald" id="dietCarbBar" style="width: 39%"></div></div>
+              </div>
+              <div class="macro-cell">
+                <span class="m-label">Fats</span>
+                <span class="m-val text-amber" id="dietFatVal">68g</span>
+                <div class="m-bar"><div class="m-fill bg-amber" id="dietFatBar" style="width: 31%"></div></div>
+              </div>
+              <div class="macro-cell">
+                <span class="m-label">Soluble Fiber</span>
+                <span class="m-val text-purple">&ge; 38g</span>
+                <div class="m-bar"><div class="m-fill bg-purple" style="width: 85%"></div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Banned Foods -->
+          <div class="danger-box">
+            <div class="danger-header">
+              <span>🚫</span>
+              <h4>Strictly Prohibited Foods (Clinical Contraindications)</h4>
+            </div>
+            <ul class="danger-bullets">
+              <li><strong>High Purine Foods:</strong> Organ meats, red meats (mutton/beef), shellfish, and beer — <em>Banned to prevent acute gout attacks from Uric Acid 8.4 mg/dL</em>.</li>
+              <li><strong>Deep-Fried & Trans Fats:</strong> Bakery snacks, palm oil, heavy ghee (&gt;5g) — <em>Halts progression of LDL 182 mg/dL</em>.</li>
+              <li><strong>High-Fructose & Refined Sugars:</strong> Sweets, colas, sweetened tea/coffee — <em>Directly worsens ALT 74 and Triglycerides 206</em>.</li>
+              <li><strong>Alcohol:</strong> 100% prohibited — <em>Protects hepatocytes (ALT 74, AST 40)</em>.</li>
+            </ul>
+          </div>
+
+          <!-- Meals -->
+          <div class="meal-list">
+            <div class="meal-item">
+              <div class="meal-meta"><span class="meal-label">Breakfast</span><span class="meal-stats">~480 kcal • 35g P • 50g C • 16g F</span></div>
+              <h4 class="meal-name">Beta-Glucan Lipid-Scavenging Oatmeal Bowl</h4>
+              <ul class="meal-ingredients">
+                <li>55g Whole Rolled Oats cooked in water or plant milk</li>
+                <li>1 scoop (30g) Whey Isolate or Plant Protein (sugar-free)</li>
+                <li>15g Ground Golden Flaxseeds or Chia (Omega-3 ALA)</li>
+                <li>80g Fresh Blueberries or Papaya</li>
+              </ul>
+            </div>
+
+            <div class="meal-item">
+              <div class="meal-meta"><span class="meal-label">Lunch</span><span class="meal-stats">~650 kcal • 52g P • 62g C • 20g F</span></div>
+              <h4 class="meal-name">Lean Protein & Steamed Quinoa Power Plate</h4>
+              <ul class="meal-ingredients">
+                <li>180g Skinless Grilled Chicken Breast (or 200g Baked Tofu)</li>
+                <li>180g Steamed Quinoa or Brown Rice</li>
+                <li>180g Steamed Broccoli, Zucchini, and Spinach</li>
+                <li>12ml Extra Virgin Olive Oil with fresh lemon juice</li>
+              </ul>
+            </div>
+
+            <div class="meal-item">
+              <div class="meal-meta"><span class="meal-label">Dinner • By 7:30 PM</span><span class="meal-stats">~540 kcal • 42g P • 52g C • 20g F</span></div>
+              <h4 class="meal-name">Steamed White Fish / Rohu & Baked Sweet Potato</h4>
+              <ul class="meal-ingredients">
+                <li>160g Steamed White Fish or Salmon with turmeric & garlic</li>
+                <li>160g Baked Sweet Potato (skin-on, rich in potassium)</li>
+                <li>150g Sautéed Asparagus & Cauliflower in 5g olive oil</li>
+              </ul>
+            </div>
+
+            <div class="meal-item">
+              <div class="meal-meta"><span class="meal-label">Afternoon Snack</span><span class="meal-stats">~280 kcal • 16g P • 26g C • 12g F</span></div>
+              <h4 class="meal-name">Glycemic Buffer & Antioxidant Bridge</h4>
+              <ul class="meal-ingredients">
+                <li>1 Crisp Green Apple sliced</li>
+                <li>25g Raw Unsalted Almonds or Walnuts</li>
+                <li>1 Cup Green Tea (rich in EGCG for liver fat oxidation)</li>
+              </ul>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- TAB 5: NIGHTLY PROGRESS TRACKING LOOP -->
+        <section class="tab-view" id="viewLoop">
+          <div class="glass-card">
+            <div class="card-top">
+              <div>
+                <span class="eyebrow">Deterministic Feedback</span>
+                <h3 class="card-title">Daily Progress Calibration</h3>
+              </div>
+              <span class="pill-muted">Save & Evaluate</span>
+            </div>
+
+            <form id="patientLogForm" class="log-form">
+              <div class="form-field">
+                <label>End-of-Day Final Steps Logged (Adapts Calorie Budget)</label>
+                <div class="input-with-tag">
+                  <input type="number" id="logStepsInput" value="6000" min="0" max="40000" step="100">
+                  <span class="tag" id="logStepsImpactTag">+270 kcal burn</span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label>Tomorrow Morning Fasting Glucose (Target &lt; 99 mg/dL)</label>
+                <div class="input-with-tag">
+                  <input type="number" id="logGlucose" value="101" placeholder="e.g. 98">
+                  <span class="tag">mg/dL</span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label>Joint Discomfort / Gout Risk (0 = None, 10 = Severe)</label>
+                <div class="slider-box">
+                  <input type="range" id="logPain" min="0" max="10" value="0">
+                  <span id="logPainTxt" class="slider-val">0 / 10 (Joints Asymptomatic)</span>
+                </div>
+              </div>
+
+              <div class="form-field">
+                <label class="check-container">
+                  <input type="checkbox" id="logWaterCheck" checked>
+                  <span>Met 3.5 Litres of water (Protects kidneys and clears uric acid)</span>
+                </label>
+              </div>
+
+              <button type="submit" class="submit-action-btn">
+                Run Tomorrow's Adaptive Calibration
+              </button>
+            </form>
+
+            <div id="adaptationResult" class="adaptation-result-box" style="display: none;">
+              <h4 class="ad-title">Generated Adjustments for Tomorrow:</h4>
+              <div id="adItems" class="ad-items"></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Device Bottom Navigation (With Habits on First Tab) -->
+      <nav class="device-dock">
+        <button class="dock-item active" data-tab="viewHabits">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          <span>Habits</span>
+        </button>
+        <button class="dock-item" data-tab="viewWorkoutHub">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="m6.5 6.5 11 11"/><path d="m21 21-1-1"/><path d="m3 3 1 1"/><path d="m18 22 4-4"/><path d="m2 6 4-4"/><path d="m3 10 7-7"/><path d="m14 21 7-7"/></svg>
+          <span>Workouts</span>
+        </button>
+        <button class="dock-item" data-tab="viewAudit">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+          <span>Audit</span>
+        </button>
+        <button class="dock-item" data-tab="viewNutrition">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          <span>Diet</span>
+        </button>
+        <button class="dock-item" data-tab="viewLoop">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6"/><path d="M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          <span>Loop</span>
+        </button>
+      </nav>
+
+    </div>
+  </main>
+
+  <!-- iPhone Install Guide Modal -->
+  <div id="installModal" class="modal-backdrop" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-top">
+        <h3>Install on iPhone 17 (PWA)</h3>
+        <button id="closeModalBtn" class="close-btn">&times;</button>
+      </div>
+      <p class="modal-desc">Run Aegis Health like a fast, native iOS App without the App Store:</p>
+      <ol class="install-steps">
+        <li>Open this site on your iPhone in <strong>Safari</strong>: <code>http://192.168.1.2:8080</code></li>
+        <li>Tap the <strong>Share</strong> button (box with an arrow pointing up at the bottom).</li>
+        <li>Scroll down and tap <strong>"Add to Home Screen"</strong>.</li>
+        <li>Tap <strong>"Add"</strong> in the top-right corner.</li>
+      </ol>
+      <p class="install-note">✓ Icon and full-screen splash will appear directly on your home screen!</p>
+    </div>
+  </div>
+
+  <!-- ===== Interactive Exercise Studio Modal ===== -->
+  <div id="exerciseStudioModal" class="studio-backdrop" aria-hidden="true">
+    <div class="studio-shell" role="dialog" aria-modal="true" aria-labelledby="studioTitle">
+      <header class="studio-head">
+        <div class="studio-head-text">
+          <h2 id="studioTitle">Exercise Studio</h2>
+          <span class="studio-head-sub" id="studioHeadSub">0 of 19 movements complete</span>
+        </div>
+        <div class="studio-head-right">
+          <span class="studio-burn-pill" id="studioBurnPill">+0 kcal</span>
+          <button id="studioCloseBtn" class="studio-close" type="button" aria-label="Close studio">✕</button>
+        </div>
+        <div class="studio-progress-track"><div class="studio-progress-fill" id="studioProgressFill"></div></div>
+      </header>
+
+      <section class="studio-right">
+        <div class="studio-stage" id="studioStage">
+          <svg id="studioSvg" viewBox="0 0 200 185" preserveAspectRatio="xMidYMid meet"></svg>
+          <div class="stage-badges">
+            <span class="stage-badge" id="stageCatBadge">UPPER</span>
+            <span class="stage-badge stage-badge-live" id="stageRepBadge">Rep 1</span>
+          </div>
+          <div class="stage-controls">
+            <button type="button" id="studioPrevBtn" class="stage-btn" aria-label="Previous exercise">‹</button>
+            <button type="button" id="studioPlayBtn" class="stage-btn" aria-label="Pause">❚❚</button>
+            <button type="button" id="studioSpeedBtn" class="stage-btn stage-btn-text" aria-label="Playback speed">1×</button>
+            <button type="button" id="studioNextBtn" class="stage-btn" aria-label="Next exercise">›</button>
+          </div>
+        </div>
+
+        <div class="studio-detail">
+          <div class="studio-detail-top">
+            <h3 id="studioExName">—</h3>
+            <span class="studio-ex-target" id="studioExTarget"></span>
+          </div>
+          <div class="studio-specs">
+            <div class="studio-spec"><span>Volume</span><strong id="studioSpecVolume">—</strong></div>
+            <div class="studio-spec"><span>Load</span><strong id="studioSpecLoad">—</strong></div>
+            <div class="studio-spec"><span>Rest</span><strong id="studioSpecRest">—</strong></div>
+          </div>
+          <p class="studio-cue" id="studioCue"></p>
+          <div class="studio-flag" id="studioFlag" style="display:none;"></div>
+          <div class="studio-sets" id="studioSets"></div>
+          <div class="studio-actions">
+            <button type="button" id="studioRestBtn" class="studio-action-btn">⏱ Start Rest</button>
+            <button type="button" id="studioCompleteBtn" class="studio-action-btn primary">✓ Mark Complete</button>
+          </div>
+        </div>
+      </section>
+
+      <aside class="studio-left" id="studioList">
+        <!-- Populated by app.js -->
+      </aside>
+    </div>
+  </div>
+
+  <!-- ===== Fullscreen Celebration Particle Canvas & Modal ===== -->
+  <canvas id="celebrationCanvas" class="celebration-canvas"></canvas>
+  
+  <div id="celebrationModal" class="celebration-overlay" style="display: none;">
+    <div class="celebration-card">
+      <div class="celebration-icon-ring">
+        <span class="celebration-icon">🏆</span>
+      </div>
+      <h3 class="celebration-title">Today's Workout Complete!</h3>
+      <p class="celebration-desc" id="celebrationDesc">
+        You crushed all prescribed movements for today's routine.
+      </p>
+      <div class="celebration-progress-pill">
+        🔥 10kg Fat-Loss Goal: 1 Day Closer to 82 kg!
+      </div>
+      <p class="celebration-subtext">
+        ✓ Automatically updated in your Habit Dashboard.
+      </p>
+      <button type="button" class="celebration-btn" id="celebrationCloseBtn">Awesome, Keep Going!</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
